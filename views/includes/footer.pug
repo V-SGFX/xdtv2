@@ -1,15 +1,15 @@
+//- XDTV: Regulamin · FAQ · Kod źródłowy. Link do kodu wymaga AGPLv3 (§13) —
+//- Repo musi zawierać kod wersji, która działa na serwerze (zob. deploy/README).
+- const xdtvSourceUrl = 'https://github.com/V-SGFX/xdtv2'
 unless minimal
-	small.footer#bottom
-		| - 
-		a(href='/news.html') #{__('news')}
-		|  - 
-		a(href='/rules.html') #{__('rules')}
-		|  - 
-		a(href='/faq.html') #{__('faq')}
-		|  - 
-		div
-			a(href='https://gitgud.io/fatchan/jschan/') jschan
-			|  #{version}
+	small.footer#bottom.xdtv-footer
+		a(href='/rules.html') Regulamin
+		| #{' · '}
+		a(href='/faq.html') FAQ
+		| #{' · '}
+		a(href=xdtvSourceUrl rel='noopener') Kod źródłowy (AGPLv3)
+		div.xdtv-footer-sub
+			| XDTV.FANS — oparte na jschan/mchan #{version}
 
 //- "render" script - for scripted things that are blocking
 script(src=`/js/render.js?v=${commit}`)

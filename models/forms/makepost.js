@@ -16,6 +16,7 @@ const { createHash, randomBytes } = require('crypto')
 	, messageHandler = require(__dirname+'/../../lib/post/message.js')
 	, moveUpload = require(__dirname+'/../../lib/file/moveupload.js')
 	, r2 = require(__dirname+'/../../lib/file/r2.js')
+	, xdtvHome = require(__dirname+'/../../lib/xdtv/home.js')
 	, mimeTypes = require(__dirname+'/../../lib/file/mimetypes.js')
 	, imageThumbnail = require(__dirname+'/../../lib/file/image/imagethumbnail.js')
 	, getDimensions = require(__dirname+'/../../lib/file/image/getdimensions.js')
@@ -736,6 +737,9 @@ module.exports = async (req, res) => {
 			});
 		}
 	}
+
+	//XDTV: strona główna (najnowsze obrazki/wrzuty) — najwyżej raz na minutę
+	xdtvHome.scheduleRebuild();
 
 	//always rebuild catalog for post counts, ordering, sticky/bumplock/etc
 	buildQueue.push({

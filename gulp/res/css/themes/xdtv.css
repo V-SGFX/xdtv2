@@ -1,0 +1,62 @@
+/*xdtv — ciemny, żółty „śmietnik”*/
+:root {
+	--icon-color: invert(79%) sepia(66%) saturate(1352%) hue-rotate(359deg) brightness(103%) contrast(104%);
+	--alt-label-color: #222222;
+	--alt-font-color: #e4e4e4;
+	--background-top: #111111;
+	--background-rest: #111111;
+	--navbar-color: #0a0a0a;
+	--post-color: #1b1b1b;
+	--post-outline-color: #262626;
+	--label-color: #1b1b1b;
+	--box-border-color: #2a2a2a;
+	--darken: #ffffff0d;
+	--highlighted-post-color: #2a2510;
+	--highlighted-post-outline-color: #ffd400;
+	--board-title: #ffd400;
+	--hr: #2a2a2a;
+	--font-color: #e4e4e4;
+	--name-color: #bdbdbd;
+	--capcode-color: #ff3b30;
+	--subject-color: #ffd400;
+	--link-color: #e4e4e4;
+	--post-link-color: #ffd400;
+	--link-hover: #fff176;
+	--accent-color: #ffd400;
+	--input-borders: #333333;
+	--input-color: #e4e4e4;
+	--input-background: #161616;
+	--dice-color: #ffd400;
+	--title-color: #ffd400;
+	--greentext-color: #9ccc65;
+	--pinktext-color: #f48fb1;
+
+	/* XDTV */
+	--xdtv-accent: #ffd400;
+	--xdtv-on-accent: #111111;
+	--xdtv-live: #ff3b30;
+	--xdtv-muted: #8a8a8a;
+	--xdtv-tile: #1b1b1b;
+}
+
+table {
+	border: none;
+	border-spacing: 2px;
+}
+
+.captcha {
+	filter: invert(90%);
+}
+
+.box-wrap, .tabs li a {
+	border: 1px solid var(--box-border-color);
+}
+
+@media only screen and (max-width: 600px) {
+	.post-info {
+		border-bottom: none;
+	}
+	.anchor:target + .post-container .post-info, .post-container.highlighted .post-info {
+		border-bottom: none;
+	}
+}

@@ -1,12 +1,20 @@
+//- XDTV: minimalne menu — boardy, KLIPY i LIVE; ustawienia (⚙) i logowanie po prawej.
+- const xdtvNav = [['smietnik', 'Śmietnik'], ['memy', 'Memy'], ['gify', 'GIFy'], ['stream', 'Stream'], ['leaked', 'Leaked']]
+- const xdtvCurrent = board ? board._id : null
 unless minimal
-	nav.navbar
-		a.nav-item(href='/index.html') #{__('Home')}
-		a(href='/boards.html' class=`nav-item ${enableWebring ? 'short-nav' : ''}`)
-			| #{__('Boards')} 
-			if enableWebring
-				.rainbow +Webring
-		a.nav-item#overboardlink(href='/overboard.html') #{__('Overboard')}
-		a.nav-item(href='/account.html') #{__('Account')}
-		if !modview && board
-			a.nav-item(href=`/${board._id}/manage/${managePage || 'index.html'}`) #{__('Manage')}
-		a.jsonly.nav-item.right#settings(data-label=(__('Settings')))
+	nav.navbar.xdtv-navbar
+		a.nav-item.xdtv-logo(href='/index.html' title='XDTV.FANS') XDTV
+		.xdtv-nav-scroll
+			each item in xdtvNav
+				a.nav-item.xdtv-nav-link(href=`/${item[0]}/index.html` class=(xdtvCurrent === item[0] ? 'xdtv-active' : '')) #{item[1]}
+			span.xdtv-nav-sep
+			a.nav-item.xdtv-nav-link(href='/clips.html') Klipy
+			a.nav-item.xdtv-nav-link.xdtv-nav-live(href='/live.html') Live
+			a.nav-item.xdtv-nav-link#overboardlink(href='/overboard.html' title=__('Overboard')) Wszystko
+			//- Konto/zarządzanie w części przewijanej — na telefonie nie zabierają miejsca boardom
+			span.xdtv-nav-push
+			if !modview && board
+				a.nav-item.xdtv-nav-link(href=`/${board._id}/manage/${managePage || 'index.html'}`) #{__('Manage')}
+			a.nav-item.xdtv-nav-link(href='/account.html' title=__('Account')) #{__('Account')}
+		.xdtv-nav-right
+			a.jsonly.nav-item#settings(data-label=(__('Settings')))

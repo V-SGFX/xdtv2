@@ -1,0 +1,317 @@
+/*
+ * XDTV — układ i typografia (doklejane do style.css po stylach jschan).
+ * Kolory pochodzą z motywu (themes/xdtv*.css); tu wartości awaryjne.
+ */
+
+:root {
+	--xdtv-font: ui-monospace, 'JetBrains Mono', 'DejaVu Sans Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+}
+
+/* ── Typografia: monospace w całości ─────────────────────────────── */
+body, input, textarea, select, button, .post-message, .navbar {
+	font-family: var(--xdtv-font);
+}
+body {
+	font-size: 13px;
+}
+.board-title, h1, h2, h3, h4 {
+	font-family: var(--xdtv-font);
+}
+
+/* ── Pasek nawigacji ─────────────────────────────────────────────── */
+.xdtv-navbar {
+	display: flex;
+	align-items: stretch;
+	height: 3em;
+	overflow: hidden;
+}
+.xdtv-navbar .nav-item {
+	float: none;
+	line-height: 3em;
+	text-transform: uppercase;
+	letter-spacing: .02em;
+	white-space: nowrap;
+}
+.xdtv-logo {
+	background: var(--xdtv-accent, #ffd400);
+	color: var(--xdtv-on-accent, #111) !important;
+	font-weight: 800;
+	font-size: 1.15em;
+	letter-spacing: .08em !important;
+	padding: 0 14px !important;
+}
+.xdtv-logo:hover {
+	filter: brightness(1.08);
+}
+.xdtv-nav-scroll {
+	display: flex;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+.xdtv-nav-scroll::-webkit-scrollbar {
+	display: none;
+}
+.xdtv-nav-right {
+	display: flex;
+	flex: 0 0 auto;
+	border-left: 1px solid var(--post-outline-color);
+}
+.xdtv-nav-link {
+	padding: 0 10px !important;
+	border-bottom: 2px solid transparent;
+}
+.xdtv-nav-link:hover {
+	color: var(--xdtv-accent, #ffd400);
+}
+.xdtv-nav-link.xdtv-active {
+	color: var(--xdtv-accent, #ffd400);
+	border-bottom-color: var(--xdtv-accent, #ffd400);
+}
+.xdtv-nav-live::before {
+	content: '';
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	margin-right: 6px;
+	border-radius: 50%;
+	background: var(--xdtv-live, #ff3b30);
+	vertical-align: middle;
+}
+.xdtv-nav-push {
+	margin-left: auto;
+}
+.xdtv-nav-sep {
+	width: 1px;
+	margin: 10px 4px;
+	background: var(--post-outline-color);
+	flex: 0 0 auto;
+}
+
+/* ── Strona główna ───────────────────────────────────────────────── */
+.xdtv-home {
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 0 8px 24px;
+}
+.xdtv-hero {
+	padding: 18px 0 10px;
+	border-bottom: 1px solid var(--hr);
+	margin-bottom: 14px;
+}
+.xdtv-hero-title {
+	margin: 0;
+	font-size: 1.9em;
+	line-height: 1.15;
+	color: var(--font-color);
+}
+.xdtv-hero-title::after {
+	content: '_';
+	color: var(--xdtv-accent, #ffd400);
+	animation: xdtv-blink 1s steps(1) infinite;
+}
+@keyframes xdtv-blink {
+	50% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.xdtv-hero-title::after { animation: none; }
+}
+.xdtv-hero-sub {
+	margin: 6px 0 0;
+	color: var(--xdtv-muted, #8a8a8a);
+}
+.xdtv-section {
+	margin-bottom: 18px;
+}
+.xdtv-h {
+	margin: 0 0 8px;
+	font-size: 1em;
+	text-transform: uppercase;
+	letter-spacing: .06em;
+	color: var(--xdtv-text-accent, var(--xdtv-accent, #ffd400));
+	border-bottom: 1px solid var(--hr);
+	padding-bottom: 4px;
+}
+.xdtv-empty {
+	color: var(--xdtv-muted, #8a8a8a);
+	padding: 8px 0;
+}
+.xdtv-muted {
+	color: var(--xdtv-muted, #8a8a8a);
+}
+
+/* Siatka miniatur */
+.xdtv-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 4px;
+}
+.xdtv-tile {
+	position: relative;
+	display: block;
+	aspect-ratio: 1 / 1;
+	overflow: hidden;
+	background: var(--xdtv-tile, #1b1b1b);
+	border: 1px solid var(--post-outline-color);
+}
+.xdtv-tile:hover {
+	border-color: var(--xdtv-accent, #ffd400);
+}
+.xdtv-tile-img, .xdtv-tile-img img {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.xdtv-tile-img img {
+	object-fit: cover;
+	transition: transform .15s ease;
+}
+.xdtv-tile:hover .xdtv-tile-img img {
+	transform: scale(1.04);
+}
+.xdtv-tile-board {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	padding: 1px 5px;
+	font-size: .85em;
+	background: rgba(0, 0, 0, .7);
+	color: #e4e4e4;
+}
+.xdtv-badge {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	padding: 0 4px;
+	font-size: .8em;
+	font-weight: 700;
+	background: var(--xdtv-accent, #ffd400);
+	color: var(--xdtv-on-accent, #111);
+}
+.xdtv-tile-img, .xdtv-row-thumb {
+	position: relative;
+}
+
+/* Dwie kolumny: wrzuty | HOT + boardy */
+.xdtv-cols {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+	gap: 18px;
+}
+
+/* Listy z miniaturą */
+.xdtv-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.xdtv-row + .xdtv-row {
+	border-top: 1px solid var(--hr);
+}
+.xdtv-row-link {
+	display: flex;
+	gap: 8px;
+	padding: 6px 4px;
+	text-decoration: none;
+	color: var(--font-color);
+}
+.xdtv-row-link:hover {
+	background: var(--darken);
+}
+.xdtv-row-thumb {
+	flex: 0 0 56px;
+	width: 56px;
+	height: 56px;
+	overflow: hidden;
+	background: var(--xdtv-tile, #1b1b1b);
+}
+.xdtv-row-thumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+.xdtv-row-thumb .xdtv-badge {
+	top: 2px;
+	right: 2px;
+	font-size: .7em;
+}
+.xdtv-row-nothumb {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--xdtv-muted, #8a8a8a);
+	font-size: 1.3em;
+}
+.xdtv-row-body {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+.xdtv-row-meta {
+	font-size: .85em;
+	color: var(--xdtv-muted, #8a8a8a);
+}
+.xdtv-row-text {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	word-break: break-word;
+}
+.xdtv-tag {
+	color: var(--xdtv-text-accent, var(--xdtv-accent, #ffd400));
+	font-weight: 700;
+}
+
+/* Boardy */
+.xdtv-boards {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.xdtv-boards li {
+	padding: 5px 4px;
+}
+.xdtv-boards li + li {
+	border-top: 1px solid var(--hr);
+}
+.xdtv-boards a {
+	text-decoration: none;
+}
+.xdtv-board-desc {
+	display: block;
+	color: var(--xdtv-muted, #8a8a8a);
+	font-size: .9em;
+}
+
+/* ── Telefon ─────────────────────────────────────────────────────── */
+@media only screen and (max-width: 760px) {
+	.xdtv-cols {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.xdtv-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 3px;
+	}
+	.xdtv-hero-title {
+		font-size: 1.4em;
+	}
+	.xdtv-nav-right #settings::after {
+		content: "\2699" !important;
+	}
+}
+
+/* ── Stopka ──────────────────────────────────────────────────────── */
+.xdtv-footer {
+	display: block;
+	text-align: center;
+	padding: 14px 8px 18px;
+	color: var(--xdtv-muted, #8a8a8a);
+}
+.xdtv-footer-sub {
+	margin-top: 4px;
+	font-size: .9em;
+}

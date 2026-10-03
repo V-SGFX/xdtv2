@@ -6,6 +6,7 @@ docker/nginx/Dockerfile
 docker/static/
 tools/
 !tools/festrings.json
+!tools/xdtv/
 gulp/res/js/socket.io.js
 
 # XDTV — dane kontenerów i sekrety nie trafiają do obrazu

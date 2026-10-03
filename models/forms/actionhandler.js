@@ -20,6 +20,7 @@ const { Posts, Boards, Modlogs } = require(__dirname+'/../../db/')
 	, dynamicResponse = require(__dirname+'/../../lib/misc/dynamic.js')
 	, { Permissions } = require(__dirname+'/../../lib/permission/permissions.js')
 	, buildQueue = require(__dirname+'/../../lib/build/queue.js')
+	, xdtvHome = require(__dirname+'/../../lib/xdtv/home.js')
 	, { postPasswordSecret } = require(__dirname+'/../../configs/secrets.js')
 	, threadRegex = /\/[a-z0-9]+\/(?:manage\/)?thread\/(\d+)\.html/i
 	, { createHash, timingSafeEqual } = require('crypto');
@@ -633,6 +634,11 @@ module.exports = async (req, res, next) => {
 
 	if (parallelPromises.length > 0) {
 		await Promise.all(parallelPromises);
+	}
+
+	//XDTV: usunięte/zaspoilerowane obrazki znikają ze strony głównej od razu
+	if (deleting || req.body.unlink_file || req.body.delete_file || req.body.spoiler) {
+		xdtvHome.rebuildNow();
 	}
 
 	return dynamicResponse(req, res, 200, 'message', {
