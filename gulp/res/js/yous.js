@@ -1,4 +1,4 @@
-/* globals __ setLocalStorage */
+/* globals __ setLocalStorage extraLocals */
 let notificationsEnabled = localStorage.getItem('notifications') == 'true';
 let notificationYousOnly = localStorage.getItem('notification-yous-only') == 'true';
 let yousEnabled = localStorage.getItem('yous-setting') == 'true';
@@ -56,9 +56,9 @@ const formatNotificationOptions = (postData) => {
 		} else {
 			if (notificationFile) {
 				if (notificationFile.hasThumb) {
-					notificationImageURL = `/file/thumb/${notificationFile.hash}${notificationFile.thumbextension}`;
+					notificationImageURL = `${((notificationFile.cdn && extraLocals.cdnUrl) ? `${extraLocals.cdnUrl}/${notificationFile.cdn}/` : '/file/')}thumb/${notificationFile.hash}${notificationFile.thumbextension}`; //XDTV: R2
 				} else {
-					notificationImageURL = `/file/${notificationFile.filename}`;
+					notificationImageURL = `${((notificationFile.cdn && extraLocals.cdnUrl) ? `${extraLocals.cdnUrl}/${notificationFile.cdn}/` : '/file/')}${notificationFile.filename}`;
 				}
 			}
 		}

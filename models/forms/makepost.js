@@ -15,6 +15,7 @@ const { createHash, randomBytes } = require('crypto')
 	, { prepareMarkdown } = require(__dirname+'/../../lib/post/markdown/markdown.js')
 	, messageHandler = require(__dirname+'/../../lib/post/message.js')
 	, moveUpload = require(__dirname+'/../../lib/file/moveupload.js')
+	, r2 = require(__dirname+'/../../lib/file/r2.js')
 	, mimeTypes = require(__dirname+'/../../lib/file/mimetypes.js')
 	, imageThumbnail = require(__dirname+'/../../lib/file/image/imagethumbnail.js')
 	, getDimensions = require(__dirname+'/../../lib/file/image/getdimensions.js')
@@ -393,6 +394,21 @@ module.exports = async (req, res) => {
 					const ratio = Math.min(thumbSize/processedFile.geometry.width, thumbSize/processedFile.geometry.height);
 					processedFile.geometry.thumbwidth = Math.floor(Math.min(processedFile.geometry.width*ratio, thumbSize));
 					processedFile.geometry.thumbheight = Math.floor(Math.min(processedFile.geometry.height*ratio, thumbSize));
+				}
+			}
+
+			//XDTV: oryginał i miniatura do R2, lokalne kopie kasowane
+			if (r2.enabled) {
+				try {
+					processedFile.cdn = await r2.uploadPostFile(processedFile);
+				} catch (e) {
+					console.error('[R2] wysyłka nie powiodła się:', e);
+					await deleteTempFiles(req).catch(console.error);
+					return dynamicResponse(req, res, 500, 'message', {
+						'title': __('Internal Server Error'),
+						'message': __('The server failed to process "%s". Possible unsupported or corrupt file.', req.files.file[i].name),
+						'redirect': redirect
+					});
 				}
 			}
 

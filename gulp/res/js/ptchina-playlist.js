@@ -1,4 +1,4 @@
-/* globals __ */
+/* globals __ extraLocals */
 //https://github.com/ussaohelcim/ptchina-playlist/tree/bookmarklet-let
 async function threadToPlaylist(board, postId) {
 	async function getThread() {
@@ -33,7 +33,7 @@ async function threadToPlaylist(board, postId) {
 		for (let i = 0; i < medias.length; i++) {
 			const media = medias[i];
 			lines.push(`#EXTINF:${media.duration}, ${media.originalFilename}`);
-			lines.push(`${location.origin}/file/${media.filename}`);
+			lines.push(`${((media.cdn && extraLocals.cdnUrl) ? `${extraLocals.cdnUrl}/${media.cdn}/` : `${location.origin}/file/`)}${media.filename}`); //XDTV: R2
 		}
 		let playlist = lines.join('\n');
 		return playlist;

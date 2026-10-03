@@ -1,0 +1,43 @@
+# XDTV.FANS 2.0 — mongo + redis + aplikacja. Nginx systemowy (deploy/nginx).
+# Uruchomienie z katalogu deploy/:  docker compose up -d --build
+name: xdtv
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: xdtv-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - ../data/mongo:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: xdtv-redis
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes"]
+    volumes:
+      - ../data/redis:/data
+
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: xdtv-app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      # Wewnątrz kontenera; na zewnątrz port i tak wystawiony tylko na 127.0.0.1.
+      JSCHAN_IP: 0.0.0.0
+    depends_on:
+      - mongodb
+      - redis
+    # Tylko pętla zwrotna — z zewnątrz wchodzi się przez nginx.
+    ports:
+      - "127.0.0.1:7010:7000"
+    volumes:
+      - ../static:/opt/static
+      - ../tmp:/opt/tmp

@@ -21,7 +21,7 @@ block head
 					when 'image'
 					when 'video'
 					when 'audio'
-						meta(property=`og:${maintype}`, content=`/file/${file.filename}`)
+						meta(property=`og:${maintype}`, content=`${(file.cdn && cdnUrl) ? `${cdnUrl}/${file.cdn}/` : '/file/'}${file.filename}`)
 						- break
 					default
 						- break

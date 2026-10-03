@@ -1,4 +1,4 @@
-/* globals __ setLocalStorage */
+/* globals __ setLocalStorage extraLocals */
 let imageSources = new Set(JSON.parse(localStorage.getItem('hiddenimages')));
 let imageSourcesList;
 
@@ -29,7 +29,7 @@ Array.from(document.getElementsByClassName('hide-image')).forEach(el => {
 const handleHiddenImages = (e) => {
 	//hide any images from this post that should already be hidden
 	e.detail.json.files.forEach(f => {
-		let hideFilename = '/file/';
+		let hideFilename = ((f.cdn && extraLocals.cdnUrl) ? `${extraLocals.cdnUrl}/${f.cdn}/` : '/file/'); //XDTV: R2
 		if (f.hasThumb) {
 			hideFilename += `thumb/${f.hash}${f.thumbextension}`;
 		} else {

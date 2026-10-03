@@ -7,3 +7,9 @@ docker/static/
 tools/
 !tools/festrings.json
 gulp/res/js/socket.io.js
+
+# XDTV — dane kontenerów i sekrety nie trafiają do obrazu
+data/
+tmp/
+deploy/.env
+.admin-haslo

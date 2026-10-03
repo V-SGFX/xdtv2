@@ -4,6 +4,7 @@ const Files = require(__dirname+'/../../db/files.js')
 	, { debugLogs } =  require(__dirname+'/../../configs/secrets.js')
 	, { remove } = require('fs-extra')
 	, uploadDirectory = require(__dirname+'/../../lib/file/uploaddirectory.js')
+	, r2 = require(__dirname+'/../../lib/file/r2.js')
 	, timeUtils = require(__dirname+'/../../lib/converter/timeutils.js');
 
 module.exports = {
@@ -26,6 +27,8 @@ module.exports = {
 			}
 		}).toArray();
 		await Files.db.deleteMany(query);
+		//XDTV: nieużywane pliki znikają też z R2
+		await r2.removeFiles(unreferenced.map(file => ({ filename: file._id, thumbExts: file.exts || [] })));
 		await Promise.all(unreferenced.map(async file => {
 			debugLogs && console.log('Pruning', file._id);
 			return Promise.all(

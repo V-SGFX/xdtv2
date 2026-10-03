@@ -92,9 +92,11 @@ mixin post(post, truncate, manage=false, globalmanage=false, ban=false, overboar
 							- continue; //Skip showing tegaki replay alone if is includes the image
 						.post-file
 							- const type = file.mimetype.split('/')[0]
+							//- XDTV: pliki wysłane do R2 mają file.cdn (prefiks gif|film|grafika)
+							- const fileBase = (file.cdn && cdnUrl) ? `${cdnUrl}/${file.cdn}/` : '/file/'
 							span.post-file-info
 								span
-									a.filename(href='/file/'+file.filename title='Download '+file.originalFilename download=file.originalFilename) #{post.spoiler || file.spoiler ? __('Spoiler File') : file.originalFilename}
+									a.filename(href=fileBase+file.filename title='Download '+file.originalFilename download=file.originalFilename) #{post.spoiler || file.spoiler ? __('Spoiler File') : file.originalFilename}
 								br
 								if globalmanage && file.phash != null
 									span #{file.phash}
@@ -102,7 +104,7 @@ mixin post(post, truncate, manage=false, globalmanage=false, ban=false, overboar
 								if !file.attachment && !(post.spoiler || file.spoiler)
 									span.jsonly
 										b [
-										a.dummy-link.hide-image.noselect(data-src=`/file/${file.hasThumb ? 'thumb/'+file.hash+file.thumbextension : file.filename}`) #{__('Hide')}
+										a.dummy-link.hide-image.noselect(data-src=`${fileBase}${file.hasThumb ? 'thumb/'+file.hash+file.thumbextension : file.filename}`) #{__('Hide')}
 										b ]
 								span 
 									|  (#{file.sizeString}
@@ -114,27 +116,27 @@ mixin post(post, truncate, manage=false, globalmanage=false, ban=false, overboar
 								if type === 'image'
 									if (board && board.settings.reverseImageSearchLinks === true) || (overboard && overboardReverseLinks === true) || manage || globalmanage
 										|  
-										span: a(href=`${reverseImageLinksURL.replace('%s', encodeURIComponent(meta.url+'/file/'+file.filename))}` rel='nofollow' referrerpolicy='same-origin' title=__('Reverse Image Search') target='_blank') #{__('Reverse')}
+										span: a(href=`${reverseImageLinksURL.replace('%s', encodeURIComponent((file.cdn && cdnUrl ? fileBase : meta.url+'/file/')+file.filename))}` rel='nofollow' referrerpolicy='same-origin' title=__('Reverse Image Search') target='_blank') #{__('Reverse')}
 									if file.originalFilename.endsWith('-tegaki.png')
 										- const matchingReplayFile = post.files.find(f => f.originalFilename.slice(0, -4) === file.originalFilename.slice(0,-3));
 										if matchingReplayFile !== undefined
 											|  
-											span: a.dummy-link.replay-tegaki.noselect(href=`/file/${matchingReplayFile.filename}` download=matchingReplayFile.originalFilename) #{__('Replay')}
+											span: a.dummy-link.replay-tegaki.noselect(href=`${(matchingReplayFile.cdn && cdnUrl) ? `${cdnUrl}/${matchingReplayFile.cdn}/` : '/file/'}${matchingReplayFile.filename}` download=matchingReplayFile.originalFilename) #{__('Replay')}
 								if file.mimetype === 'tegaki/replay'
 									|  
-									span.jsonly: a.dummy-link.replay-tegaki.noselect(href=`/file/${file.filename}` download=file.originalFilename) #{__('Replay')}
+									span.jsonly: a.dummy-link.replay-tegaki.noselect(href=`${fileBase}${file.filename}` download=file.originalFilename) #{__('Replay')}
 							.post-file-src(data-type=type data-attachment=(file.attachment ? "true" : "false"))
-								a(target='_blank' href=`/file/${file.filename}`)
+								a(target='_blank' href=`${fileBase}${file.filename}`)
 									if post.spoiler || file.spoiler
 										div.spoilerimg.file-thumb
 									else if file.hasThumb
-										img.file-thumb(src=`/file/thumb/${file.hash}${file.thumbextension}` height=file.geometry.thumbheight width=file.geometry.thumbwidth loading='lazy')
+										img.file-thumb(src=`${fileBase}thumb/${file.hash}${file.thumbextension}` height=file.geometry.thumbheight width=file.geometry.thumbwidth loading='lazy')
 									else if file.attachment
 										div.attachmentimg.file-thumb(data-mimetype=file.mimetype)
 									else if type === 'audio'
 										div.audioimg.file-thumb
 									else
-										img.file-thumb(src=`/file/${file.filename}` height=file.geometry.height width=file.geometry.width loading='lazy')
+										img.file-thumb(src=`${fileBase}${file.filename}` height=file.geometry.height width=file.geometry.width loading='lazy')
 			- if (post.message && modview) { post.message = post.message.replace(new RegExp(`<a class="quote" href="/${post.board}/`, 'g'), `<a class="quote" href="/${post.board}/manage/`); } //its either this, a subdomain, or nothing.
 			- let truncatedMessage = post.message;
 			if post.message

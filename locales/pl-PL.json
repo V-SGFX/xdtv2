@@ -876,7 +876,7 @@
 	"Meta site name must not exceed 100 characters": "Meta nazwa witryny nie może przekraczać 100 znaków",
 	"Meta URL": "Meta URL",
 	"Meta url must not exceed 100 characters": "Meta URL nie może przekraczać 100 znaków",
-	"Mime type \"%s\" for \"%s\" not allowed": "TypV-SGFX/mchan": "Typ MIME \"%s\" dla \"%s\" niedozwolony",
+	"Mime type \"%s\" for \"%s\" not allowed": "Typ MIME \"%s\" dla \"%s\" niedozwolony",
 	"Mime type \"%s\" invalid for file \"%s\"": "Typ MIME \"%s\" nieprawidłowy dla pliku \"%s\"",
 	"Mime type mismatch for file \"%s\"": "Niezgodność typu MIME dla pliku \"%s\"",
 	"Min and max reply message lengths must not violate eachother": "Minimalna i maksymalna długość wiadomości odpowiedzi nie mogą być sprzeczne",
@@ -891,9 +891,7 @@
 	"Missing .html name": "Brak nazwy .html",
 	"Missing 2FA code": "Brak kodu 2FA",
 	"Missing board": "Brak tablicy",
-	"Missing confirmation": "Brak potwier _
-
-dzenia",
+	"Missing confirmation": "Brak potwierdzenia",
 	"Missing file extensions": "Brak rozszerzeń plików",
 	"Missing filter id": "Brak ID filtra",
 	"Missing message": "Brak wiadomości",
