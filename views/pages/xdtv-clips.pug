@@ -1,0 +1,22 @@
+extends ../layout.pug
+include ../mixins/xdtv.pug
+
+block head
+	title Klipy — #{meta.siteName}
+	meta(name='description' content='Klipy streamerów z Twitcha, Kicka i YouTube.')
+	if meta.url
+		link(rel='canonical' href=`${meta.url}/clips.html`)
+
+block content
+	.xdtv-page.xdtv-page-full
+		.xdtv-main
+			.xdtv-section-head
+				h1.xdtv-section-title Klipy
+				span.xdtv-section-note najnowsze akcje ze streamów
+			if clipItems && clipItems.length > 0
+				.xdtv-clip-grid
+					each c in clipItems
+						+xdtvClipCard(c)
+			else
+				.xdtv-empty
+					p Brak klipów.

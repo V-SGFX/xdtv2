@@ -38,3 +38,4 @@ junit.xml
 deploy/.env
 data/
 .admin-haslo
+deploy/test-content.json

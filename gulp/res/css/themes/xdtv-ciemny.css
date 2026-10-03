@@ -1,0 +1,52 @@
+/*xdtv-ciemny — grafitowy (drugi tryb)*/
+:root {
+	--icon-color: invert(92%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(95%) contrast(90%);
+	--alt-label-color: #2e3033;
+	--alt-font-color: #e6e6e6;
+	--background-top: #1c1d1f;
+	--background-rest: #1c1d1f;
+	--navbar-color: #25272a;
+	--post-color: #25272a;
+	--post-outline-color: #3a3d41;
+	--label-color: #25272a;
+	--box-border-color: #3a3d41;
+	--darken: #ffffff0d;
+	--highlighted-post-color: #3a2526;
+	--highlighted-post-outline-color: #e25c5c;
+	--board-title: #e6e6e6;
+	--hr: #3a3d41;
+	--font-color: #e6e6e6;
+	--name-color: #bdbdbd;
+	--capcode-color: #e25c5c;
+	--subject-color: #e25c5c;
+	--link-color: #e6e6e6;
+	--post-link-color: #e87878;
+	--link-hover: #f3a3a3;
+	--accent-color: #e25c5c;
+	--input-borders: #44474c;
+	--input-color: #e6e6e6;
+	--input-background: #1f2022;
+	--dice-color: #e25c5c;
+	--title-color: #e6e6e6;
+	--greentext-color: #8fbf5a;
+	--pinktext-color: #e48ab5;
+
+	/* XDTV */
+	--xdtv-bg: #1c1d1f;
+	--xdtv-surface: #25272a;
+	--xdtv-surface-muted: #2e3033;
+	--xdtv-border: #3a3d41;
+	--xdtv-text: #e6e6e6;
+	--xdtv-muted: #9a9a9a;
+	--xdtv-primary: #d43c3c;
+	--xdtv-primary-hover: #e25c5c;
+	--xdtv-on-primary: #ffffff;
+	--xdtv-live: #ef5350;
+	--xdtv-header: #25272a;
+	--xdtv-subnav: #2e3033;
+	--xdtv-tile-bg: #2e3033;
+}
+
+.captcha {
+	filter: invert(90%);
+}

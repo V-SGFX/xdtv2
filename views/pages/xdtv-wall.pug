@@ -1,0 +1,66 @@
+extends ../layout.pug
+include ../mixins/xdtv.pug
+
+//- XDTV — ściana obrazków: Najnowsze (index), Popularne, Dziś. Dane: lib/xdtv/home.js
+
+block head
+	- const pageTitle = wallTab === 'najnowsze' ? `${meta.siteName} — co dziś wygrzebał internet` : `${wallTitle} — ${meta.siteName}`
+	- const pagePath = wallTab === 'najnowsze' ? '/' : `/${wallTab}.html`
+	title #{pageTitle}
+	meta(name='description' content='Ściana memów, obrazków i GIF-ów. Wrzucasz bez konta. Do tego LIVE i klipy streamerów.')
+	meta(property='og:title' content=pageTitle)
+	meta(property='og:description' content='Memy, obrazki, GIF-y, LIVE i klipy streamerów.')
+	if meta.url
+		link(rel='canonical' href=`${meta.url}${pagePath}`)
+		meta(property='og:url' content=`${meta.url}${pagePath}`)
+	if wallItems && wallItems[0]
+		meta(property='og:image' content=`${(wallItems[0].file.cdn && cdnUrl) ? `${cdnUrl}/${wallItems[0].file.cdn}/` : (meta.url || '') + '/file/'}${wallItems[0].file.hasThumb ? 'thumb/' + wallItems[0].file.hash + wallItems[0].file.thumbextension : wallItems[0].file.filename}`)
+
+block content
+	.xdtv-page
+		.xdtv-main
+			if featured && featured.length >= 3
+				section.xdtv-featured(aria-label='Na topie')
+					each item, i in featured
+						+xdtvTile(item, i === 0 ? 'xdtv-tile-big' : 'xdtv-tile-small')
+
+			.xdtv-section-head
+				h1.xdtv-section-title #{wallTitle}
+				span.xdtv-section-note
+					case wallTab
+						when 'popularne'
+							| najwięcej reakcji i komentarzy z ostatnich 7 dni
+						when 'dzis'
+							| co się dzieje od wczoraj
+						default
+							| świeże wrzuty ze wszystkich kategorii
+
+			if wallItems && wallItems.length > 0
+				.xdtv-wall
+					each item, i in wallItems
+						+xdtvTile(item)
+						//- Na telefonie paski LIVE i KLIPY wchodzą między obrazki (panel boczny jest ukryty)
+						if i === 11 && liveStrip && liveStrip.length > 0
+							section.xdtv-strip.xdtv-only-narrow
+								h2.xdtv-module-head
+									a(href='/live.html')
+										span.xdtv-dot
+										| Live teraz
+								.xdtv-strip-scroll
+									each c in liveStrip
+										+xdtvLiveCard(c, true)
+						if i === 23 && clipStrip && clipStrip.length > 0
+							section.xdtv-strip.xdtv-only-narrow
+								h2.xdtv-module-head
+									a(href='/clips.html') Klipy
+								.xdtv-strip-scroll
+									each c in clipStrip
+										+xdtvClipCard(c)
+				.xdtv-more
+					a.xdtv-btn.xdtv-btn-ghost(href='/catalog.html') Starsze w katalogu →
+			else
+				.xdtv-empty
+					p Pusto. Bądź pierwszy.
+					a.xdtv-btn(href='#wrzuc' data-xdtv-upload) + Wrzuć
+
+		include ../includes/xdtv-sidebar.pug

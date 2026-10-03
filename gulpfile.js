@@ -62,7 +62,7 @@ gulp.task('generate-favicon', function (done) {
 		design: {
 			ios: {
 				pictureAspect: 'backgroundAndMargin',
-				backgroundColor: '#ffd400',
+				backgroundColor: '#b91c1c',
 				margin: '0%',
 				assets: {
 					ios6AndPriorIcons: false,
@@ -76,7 +76,7 @@ gulp.task('generate-favicon', function (done) {
 			},
 			windows: {
 				pictureAspect: 'whiteSilhouette',
-				backgroundColor: '#ffd400',
+				backgroundColor: '#b91c1c',
 				onConflict: 'override',
 				assets: {
 					windows80Ie10Tile: false,
@@ -90,7 +90,7 @@ gulp.task('generate-favicon', function (done) {
 			},
 			androidChrome: {
 				pictureAspect: 'noChange',
-				themeColor: '#111111',
+				themeColor: '#b91c1c',
 				manifest: {
 					display: 'standalone',
 					orientation: 'notSet',
@@ -105,7 +105,7 @@ gulp.task('generate-favicon', function (done) {
 			safariPinnedTab: {
 				pictureAspect: 'blackAndWhite',
 				threshold: 30,
-				themeColor: '#111111'
+				themeColor: '#b91c1c'
 			}
 		},
 		settings: {

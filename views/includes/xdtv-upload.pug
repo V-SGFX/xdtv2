@@ -1,0 +1,29 @@
+//- XDTV — okienko „+ WRZUĆ” (strony bez formularza boardu: ściana, live, klipy).
+//- Formularz obsługuje forms.js z jschan (XHR, przeciąganie, wklejanie, captcha).
+//- Kolejność label → input[type=file] → .upload-list jest wymagana przez forms.js.
+- const xdtvUploadBoards = [['smietnik', 'Śmietnik'], ['memy', 'Memy'], ['gify', 'GIF-y'], ['stream', 'Stream'], ['leaked', 'Leaked']]
+.xdtv-modal-bg.jsonly#xdtv-upload(hidden)
+	.xdtv-modal(role='dialog' aria-modal='true' aria-labelledby='xdtv-upload-title')
+		.xdtv-modal-head
+			span#xdtv-upload-title Co wrzucasz?
+			button.xdtv-modal-close(type='button' data-xdtv-close aria-label='Zamknij') ×
+		form.form-post#xdtv-upload-form(action='/forms/board/smietnik/post' enctype='multipart/form-data' method='POST')
+			input(type='hidden' name='thread' value='')
+			section.row.xdtv-upload-drop-row
+				.label.xdtv-sr Plik
+				span.col
+					label.jsonly.postform-style.filelabel.xdtv-drop(for='xdtv-file') Przeciągnij obrazek lub kliknij tutaj
+					input#xdtv-file(type='file' name='file' required accept='image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm')
+					.upload-list(data-spoilers='false' data-strip-filenames='true')
+			section.row
+				textarea.xdtv-upload-text(name='message' rows='2' maxlength='2000' placeholder='Coś dodasz? (opcjonalnie)')
+			section.row.xdtv-upload-cats
+				span.xdtv-upload-cats-label Gdzie:
+				each c, i in xdtvUploadBoards
+					button.xdtv-chip(type='button' data-board=c[0] aria-pressed=(i === 0 ? 'true' : 'false')) #{c[1]}
+			if captchaOptions && captchaOptions.type === 'text'
+				section.row.xdtv-upload-captcha
+					include ./captcha.pug
+			.xdtv-upload-foot
+				span.xdtv-upload-hint JPG, PNG, WEBP, GIF, MP4/WEBM · bez konta
+				input.xdtv-btn#xdtv-upload-submit(type='submit' value='Wrzuć')

@@ -1,0 +1,27 @@
+extends ../layout.pug
+include ../mixins/xdtv.pug
+
+block head
+	title Live teraz — #{meta.siteName}
+	meta(name='description' content='Kto teraz nadaje: Twitch, Kick, YouTube.')
+	if meta.url
+		link(rel='canonical' href=`${meta.url}/live.html`)
+
+block content
+	.xdtv-page.xdtv-page-full
+		.xdtv-main
+			.xdtv-section-head
+				h1.xdtv-section-title
+					span.xdtv-dot
+					| Live teraz
+				span.xdtv-section-note Twitch · Kick · YouTube
+			if liveItems && liveItems.length > 0
+				.xdtv-live-grid
+					each c in liveItems
+						+xdtvLiveCard(c)
+			else
+				.xdtv-empty
+					p Nikt teraz nie nadaje. Zajrzyj do
+						| #{' '}
+						a(href='/clips.html') klipów
+						| .

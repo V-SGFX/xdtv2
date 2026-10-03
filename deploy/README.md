@@ -31,8 +31,20 @@ Podgląd bez cache Cloudflare (np. Playwright):
 
 ```bash
 docker compose exec app node tools/xdtv/setup-boards.js   # boardy, język, captcha
-docker compose exec app node tools/xdtv/setup-etap2.js    # nazwa, adres, motywy
+docker compose exec app node tools/xdtv/setup-etap2.js    # nazwa, adres
+docker compose exec app node tools/xdtv/setup-motyw.js    # motywy, miniatury 480 px, refererCheck
 ```
+
+## Treści testowe
+
+```bash
+tools/xdtv/test-content.sh    # ~46 wątków, komentarze, reakcje, testowe LIVE i klipy
+tools/xdtv/test-cleanup.sh    # usuwa wszystko (posty akcją moderatora → pliki znikają z R2)
+```
+
+Pliki testowe muszą być unikalne: klucz w R2 to skrót zawartości, a Cloudflare
+pamięta 404 skasowanego pliku (do 4 h) — ten sam obrazek wrzucony ponownie
+pokazałby pustą miniaturę.
 
 ## Przed podmianą na xdtv.fans
 

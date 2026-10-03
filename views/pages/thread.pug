@@ -1,4 +1,5 @@
 extends ../layout.pug
+include ../mixins/xdtv.pug
 include ../mixins/post.pug
 include ../mixins/boardnav.pug
 include ../mixins/managenav.pug
@@ -27,6 +28,8 @@ block head
 						- break
 
 block content
+	//- XDTV: powrót na ścianę
+	a.xdtv-back(href='/index.html') ← Wróć do ściany
 	+boardheader(modview ? __('Mod View') : null)
 	br
 	if thread.replyposts >= board.settings.replyLimit && !thread.cyclic && !modview
@@ -49,6 +52,10 @@ block content
 		.thread
 			- uids && thread.userId && uids.add(thread.userId)
 			+post(thread)
+			//- XDTV: reakcje pod postem i nagłówek komentarzy
+			+xdtvReactBar(thread)
+			.xdtv-comments-head Komentarze
+				span.xdtv-comments-count #{thread.replyposts}
 			for post in thread.replies
 				- uids && post.userId && uids.add(post.userId)
 				+post(post)

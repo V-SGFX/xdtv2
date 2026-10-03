@@ -38,6 +38,10 @@ router.post('/board/:board/post', geoIp, processIp, useSession, sessionRefresh, 
 router.post('/board/:board/modpost', geoIp, processIp, useSession, sessionRefresh, Boards.exists, setBoardLanguage, calcPerms, banCheck, isLoggedIn,
 	hasPerms.one(Permissions.MANAGE_BOARD_GENERAL), fileMiddlewares.posts, makePostController.paramConverter, csrf, numFiles, blockBypass.middleware, dnsblCheck, imageHashes, makePostController.controller); //mod post has token instead of captcha
 
+//XDTV: reakcje 😂🔥💀🤡❤️ (jedna na osobę na post)
+router.post('/board/:board/react', geoIp, processIp, useSession, sessionRefresh, Boards.exists, calcPerms, banCheck,
+	require(__dirname+'/xdtv.js').reactController);
+
 //post actions
 router.post('/board/:board/actions', geoIp, processIp, useSession, sessionRefresh, Boards.exists, setBoardLanguage, calcPerms, banCheck, actionController.paramConverter, verifyCaptcha, actionController.controller); //public, with captcha
 router.post('/board/:board/modactions', geoIp, processIp, useSession, sessionRefresh, csrf, Boards.exists, setBoardLanguage, calcPerms, banCheck, isLoggedIn,

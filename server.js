@@ -116,6 +116,7 @@ const config = require(__dirname+'/lib/misc/config.js')
 	app.use(referrerCheck);
 
 	app.use('/forms', require(__dirname+'/controllers/forms.js'));
+	app.use('/', require(__dirname+'/controllers/xdtv.js').router); //XDTV: reakcje
 	app.use('/', require(__dirname+'/controllers/pages.js'));
 
 	//404 catchall

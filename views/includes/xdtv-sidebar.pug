@@ -1,0 +1,41 @@
+//- XDTV — prawy panel: LIVE TERAZ, POPULARNE, KLIPY. Na telefonie ukryty.
+aside.xdtv-side
+	section.xdtv-module
+		h2.xdtv-module-head
+			a(href='/live.html')
+				span.xdtv-dot
+				| Live teraz
+		if sideLive && sideLive.length > 0
+			ul.xdtv-side-live
+				each c in sideLive
+					li
+						a(href=c.platformUrl target='_blank' rel='noopener nofollow')
+							span.xdtv-side-live-name
+								span.xdtv-dot
+								| #{c.displayName}
+							span.xdtv-side-live-cat #{c.category || c.currentTitle}
+							span.xdtv-side-live-viewers #{(c.viewerCount || 0).toLocaleString('pl-PL')} widzów
+			a.xdtv-module-more(href='/live.html') Wszyscy na żywo →
+		else
+			p.xdtv-module-empty Nikt teraz nie nadaje.
+
+	if sidePopular && sidePopular.length > 0
+		section.xdtv-module
+			h2.xdtv-module-head
+				a(href='/popularne.html') Popularne
+			.xdtv-side-grid
+				each item in sidePopular
+					a.xdtv-side-tile(href=item.link)
+						+xdtvMedia(item.file, 'xdtv-side-tile-media')
+						span.xdtv-side-tile-meta 💬 #{item.replies}
+
+	section.xdtv-module
+		h2.xdtv-module-head
+			a(href='/clips.html') Klipy
+		if sideClips && sideClips.length > 0
+			.xdtv-side-clips
+				each c in sideClips
+					+xdtvClipCard(c)
+			a.xdtv-module-more(href='/clips.html') Więcej klipów →
+		else
+			p.xdtv-module-empty Brak klipów.
