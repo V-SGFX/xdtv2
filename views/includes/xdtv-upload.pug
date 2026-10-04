@@ -21,7 +21,7 @@
 				span.xdtv-upload-cats-label Gdzie:
 				each c, i in xdtvUploadBoards
 					button.xdtv-chip(type='button' data-board=c[0] aria-pressed=(i === 0 ? 'true' : 'false')) #{c[1]}
-			if captchaOptions && captchaOptions.type === 'text'
+			if captchaOptions
 				section.row.xdtv-upload-captcha
 					include ./captcha.pug
 			.xdtv-upload-foot

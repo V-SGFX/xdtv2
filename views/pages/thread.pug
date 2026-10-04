@@ -49,7 +49,7 @@ block content
 		if modview
 			input(type='hidden' name='_csrf' value=csrf)
 		hr(size=1)
-		.thread
+		.thread(class=(modview ? '' : 'xdtv-thread-public'))
 			- uids && thread.userId && uids.add(thread.userId)
 			+post(thread)
 			//- XDTV: reakcje pod postem i nagłówek komentarzy
@@ -85,3 +85,6 @@ block content
 			include ../includes/actionfooter_manage.pug
 		else
 			include ../includes/actionfooter.pug
+	//- XDTV: composer komentarzy — poza formularzem akcji (zagnieżdżone formularze i forms.js)
+	if !modview && !(thread.replyposts >= board.settings.replyLimit && !thread.cyclic)
+		include ../includes/xdtv-composer.pug

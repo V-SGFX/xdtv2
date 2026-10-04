@@ -21,7 +21,7 @@ Podgląd bez cache Cloudflare (np. Playwright):
 
 ## Pliki
 
-- `deploy/.env` — sekrety (Mongo, Redis, cookie, R2). Tylko na serwerze.
+- `deploy/.env` — sekrety (Mongo, Redis, cookie, R2, GIPHY, hCaptcha). Tylko na serwerze.
 - `/var/www/xdtv/.admin-haslo` — startowe hasło admina (zmienić w panelu).
 - `data/` — dane Mongo i Redisa. `static/` — strony generowane przez jschan.
 - Pliki postów: Cloudflare R2, bucket `cden`, publicznie `cdn.xdtv.fans`
@@ -33,6 +33,7 @@ Podgląd bez cache Cloudflare (np. Playwright):
 docker compose exec app node tools/xdtv/setup-boards.js   # boardy, język, captcha
 docker compose exec app node tools/xdtv/setup-etap2.js    # nazwa, adres
 docker compose exec app node tools/xdtv/setup-motyw.js    # motywy, miniatury 480 px, refererCheck
+docker compose exec app node tools/xdtv/setup-hcaptcha.js # captcha: hCaptcha (klucze HCAPTCHA_* w .env)
 ```
 
 ## Treści testowe

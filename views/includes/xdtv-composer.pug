@@ -1,0 +1,35 @@
+//- XDTV — composer komentarzy (widok posta). Logika: gulp/res/js/xdtv-composer.js
+//- Celowo BEZ <form method=post>: forms.js z jschan przejąłby każdy taki formularz.
+//- Wysyła na tę samą trasę co formularz jschan (/forms/board/:b/post, thread=…),
+//- więc działają limity, antyspam, walidacja plików, miniatury i R2.
+section.xdtv-composer.jsonly#odpowiedz(data-board=board._id data-thread=thread.postId aria-label='Komentarz')
+	button.xdtv-composer-collapsed(type='button' aria-label='Napisz komentarz')
+		span.xdtv-composer-icon(aria-hidden='true') 💬
+		span Napisz komentarz…
+	.xdtv-composer-box(hidden)
+		.xdtv-composer-reply(hidden)
+			span.xdtv-composer-reply-text ↳ Odpowiedź na komentarz
+			button.xdtv-composer-reply-cancel(type='button' title='Anuluj odpowiedź' aria-label='Anuluj odpowiedź') × anuluj odpowiedź
+		label.xdtv-sr(for='xdtv-composer-text') Treść komentarza
+		textarea#xdtv-composer-text.xdtv-composer-text(rows='1' maxlength=globalLimits.fieldLength.message placeholder='Napisz coś…')
+		.xdtv-composer-preview(hidden)
+			img.xdtv-composer-preview-img(alt='')
+			span.xdtv-composer-preview-name
+			button.xdtv-composer-preview-remove(type='button' title='Usuń załącznik' aria-label='Usuń załącznik') ×
+		.xdtv-composer-captcha(hidden)
+			span.xdtv-composer-captcha-note Duży ruch — potwierdź, że nie jesteś botem:
+			.xdtv-composer-captcha-widget
+		.xdtv-composer-bar
+			.xdtv-composer-tools
+				button.xdtv-tool.xdtv-tool-emoji(type='button' title='Emoji' aria-label='Emoji' aria-expanded='false') 🙂
+				button.xdtv-tool.xdtv-tool-gif(type='button' title='GIF' aria-label='GIF' aria-expanded='false') GIF
+				button.xdtv-tool.xdtv-tool-image(type='button' title='Obraz' aria-label='Dodaj obraz') 🖼
+				input.xdtv-composer-file(type='file' accept='image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm' hidden)
+			span.xdtv-composer-hint Enter — wyślij · Shift+Enter — nowa linia
+			button.xdtv-composer-cancel(type='button') Anuluj
+			button.xdtv-btn.xdtv-btn-small.xdtv-composer-send(type='button') Wyślij
+		.xdtv-pop.xdtv-emoji-pop(hidden role='dialog' aria-label='Emoji')
+		.xdtv-pop.xdtv-gif-pop(hidden role='dialog' aria-label='GIF')
+			input.xdtv-gif-search(type='search' placeholder='Szukaj GIF-a…' aria-label='Szukaj GIF-a')
+			.xdtv-gif-grid(role='listbox' aria-label='Wyniki')
+			.xdtv-gif-attr Powered by GIPHY

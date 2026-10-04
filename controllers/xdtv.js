@@ -4,6 +4,9 @@
  * XDTV — trasy dodane do jschan.
  *  POST /forms/board/:board/react   (podpięte w controllers/forms.js)
  *  GET  /xdtv/reakcje.json?p=board:id,board:id
+ *  GET  /xdtv/gif.json?q=tekst         (wyszukiwarka GIF dla composera, GIPHY)
+ *  GET  /popularne.html, /dzis.html, /live.html, /clips.html — budowane na żądanie,
+ *       gdy pliku nie ma (po restarcie jschan kasuje wygenerowane strony)
  */
 
 const express = require('express')
@@ -11,7 +14,10 @@ const express = require('express')
 	, geoIp = require(__dirname+'/../lib/middleware/ip/geoip.js')
 	, processIp = require(__dirname+'/../lib/middleware/ip/processip.js')
 	, reactions = require(__dirname+'/../lib/xdtv/reactions.js')
-	, xdtvHome = require(__dirname+'/../lib/xdtv/home.js');
+	, xdtvHome = require(__dirname+'/../lib/xdtv/home.js')
+	, gifs = require(__dirname+'/../lib/xdtv/gifs.js')
+	, path = require('path')
+	, uploadDirectory = require(__dirname+'/../lib/file/uploaddirectory.js');
 
 const BOARD_RE = /^[a-z0-9]{1,50}$/;
 
@@ -49,6 +55,32 @@ router.get('/xdtv/reakcje.json', geoIp, processIp, async (req, res) => {
 	} catch (e) {
 		console.error('[XDTV] reakcje.json:', e);
 		return res.status(500).json({ error: 'Błąd serwera' });
+	}
+});
+
+router.get('/xdtv/gif.json', geoIp, processIp, async (req, res) => {
+	const q = String(req.query.q || '').trim().slice(0, 60);
+	try {
+		const result = await gifs.search(q, res.locals.ip.cloak);
+		res.set('Cache-Control', 'private, max-age=60');
+		return res.status(result.error ? (result.status || 400) : 200).json(result);
+	} catch (e) {
+		console.error('[XDTV] gif.json:', e.message);
+		return res.status(502).json({ error: 'Wyszukiwarka GIF chwilowo nie działa' });
+	}
+});
+
+// Jedna przebudowa naraz, nawet gdy po restarcie wejdzie wielu ludzi jednocześnie
+let building = null;
+router.get('/:page(popularne|dzis|live|clips).html', async (req, res, next) => {
+	try {
+		building = building || require(__dirname+'/../lib/build/tasks.js').buildHomepage()
+			.finally(() => { building = null; });
+		await building;
+		res.set('Cache-Control', 'max-age=0');
+		return res.sendFile(path.join(uploadDirectory, 'html', `${req.params.page}.html`));
+	} catch (e) {
+		return next(e);
 	}
 });
 

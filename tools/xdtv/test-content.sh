@@ -102,5 +102,12 @@ echo "wątki: ${#threads[@]}, komentarze: $c"
 # ── Reakcje, LIVE i KLIPY (w kontenerze) ─────────────────────────────
 docker cp "$LOG" xdtv-app:/opt/tmp/xdtv-test/test-content.json
 docker exec xdtv-app node tools/xdtv/test-extras.js /opt/tmp/xdtv-test/test-content.json
+# Hurtowe postowanie wyzwala antyspam jschan (pphTrigger → captcha przy KAŻDYM poście).
+# To skutek testu, nie ruchu — przywracamy captchę tylko przy nowym wątku.
+docker exec xdtv-app node -e "
+const Mongo=require('./db/db.js');
+(async()=>{await Mongo.connect();const redis=require('./lib/redis/redis.js');
+await Mongo.db.collection('boards').updateMany({'settings.captchaMode':2},{\$set:{'settings.captchaMode':1}});
+await redis.deletePattern('board:*');await redis.del('triggered');process.exit(0);})();"
 rm -f "$JAR"
 echo "Gotowe. Usunięcie: tools/xdtv/test-cleanup.sh"

@@ -65,8 +65,10 @@ mixin post(post, truncate, manage=false, globalmanage=false, ban=false, overboar
 				if !post.thread && (truncate || manage || globalmanage)
 					|  
 					span.noselect: a(href=`${postURL}`) [#{__('Open')}]
-				select.jsonly.postmenu
+				select.jsonly.postmenu(aria-label='Opcje posta' title='Opcje')
 					option(value='single') #{__('Hide')}
+					//- XDTV: zgłoszenie bez checkboxa i formularza akcji (okienko w xdtv-composer.js)
+					option(value='xdtv-report') Zgłoś
 					if post.userId
 						option(value='fid') #{__('Filter ID')}
 					if post.name
@@ -196,6 +198,10 @@ mixin post(post, truncate, manage=false, globalmanage=false, ban=false, overboar
 					each backlink in post.backlinks
 						a.quote(href=`${postURL}#${backlink.postId}`) &gt;&gt;#{backlink.postId}
 						|  
+			//- XDTV: „Odpowiedz” pod komentarzem → tryb odpowiedzi w composerze (na stronie boardu: przejście do posta)
+			if post.thread
+				.xdtv-post-actions
+					a.xdtv-reply-btn(href=`/${post.board}/thread/${post.thread}.html#odpowiedz-${post.postId}` data-post=post.postId) Odpowiedz
 	if manage === true
 		each r in post.reports
 			+report(r, true)
