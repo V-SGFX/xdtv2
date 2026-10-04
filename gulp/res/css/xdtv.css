@@ -19,6 +19,23 @@
 	--xdtv-row-h: 210px;
 	--xdtv-header-h: 52px;
 	--xdtv-radius: 3px;
+
+	/* Wartości awaryjne (jasny motyw) — gdy aktywny motyw nie definiuje
+	 * zmiennych XDTV, okienka i kafelki nie robią się przezroczyste.
+	 * Motyw (link#theme) wczytuje się po style.css i je nadpisuje. */
+	--xdtv-bg: #f2f0ec;
+	--xdtv-surface: #ffffff;
+	--xdtv-surface-muted: #f7f6f3;
+	--xdtv-border: #d7d4ce;
+	--xdtv-text: #242424;
+	--xdtv-muted: #77736d;
+	--xdtv-primary: #d65a31;
+	--xdtv-primary-hover: #b8481f;
+	--xdtv-on-primary: #ffffff;
+	--xdtv-live: #d92727;
+	--xdtv-header: #ffffff;
+	--xdtv-subnav: #f7f6f3;
+	--xdtv-tile-bg: #e9e6e0;
 }
 
 [hidden] {

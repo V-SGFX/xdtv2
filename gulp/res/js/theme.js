@@ -1,4 +1,12 @@
-/* globals setLocalStorage */
+/* globals setLocalStorage themes */
+//XDTV: motyw zapisany w przeglądarce, którego już nie ma (np. usunięty xdtv-jasny
+//albo dawny motyw jschan), dawał stronę bez zmiennych kolorów — przezroczyste okienka.
+try {
+	const savedTheme = localStorage.getItem('theme');
+	if (savedTheme && savedTheme !== 'default' && typeof themes !== 'undefined' && !themes.includes(savedTheme)) {
+		setLocalStorage('theme', 'default');
+	}
+} catch (e) { /* localStorage niedostępny */ }
 let customCSSString = localStorage.getItem('customcss');
 let disableBoardCss = localStorage.getItem('disableboardcss') == 'true';
 
