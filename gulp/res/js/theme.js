@@ -108,7 +108,10 @@ function changeTheme(type) {
 					//remove temp inline style since we dont need it anymore
 					tempLink.remove();
 				};
-				themeLink.href = path;
+				//XDTV: wersja jak przy style.css — inaczej Cloudflare podaje stary motyw
+				const styleLink = document.querySelector('link[href*="/css/style.css"]');
+				const version = styleLink ? (styleLink.getAttribute('href').match(/[?&]v=([^&]+)/) || [])[1] : null;
+				themeLink.href = version ? `${path}?v=${version}` : path;
 				document.head.appendChild(themeLink);
 			}
 			break;
