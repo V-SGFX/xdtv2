@@ -1,0 +1,41 @@
+extends ../layout.pug
+include ../mixins/xdtv.pug
+
+block head
+	title #{searchQuery ? `${searchQuery} — szukaj` : 'Szukaj'} — #{meta.siteName}
+	meta(name='robots' content='noindex')
+
+block content
+	.xdtv-page
+		.xdtv-main
+			.xdtv-section-head
+				h1.xdtv-section-title Szukaj
+				if searchQuery
+					span.xdtv-section-note „#{searchQuery}” · #{result.items.length} #{result.items.length === 1 ? 'materiał' : 'materiałów'}
+			form.xdtv-search-big(action='/szukaj.html' method='GET' role='search')
+				input(type='search' name='q' value=searchQuery placeholder='Czego szukasz? (opis, komentarz, streamer, klip)' maxlength='60' aria-label='Szukaj' autofocus=!searchQuery)
+				button.xdtv-btn(type='submit') Szukaj
+			if !searchQuery
+				p.xdtv-empty Wpisz co najmniej 2 znaki.
+			else
+				if result.creators.length > 0
+					section.xdtv-search-block
+						h2.xdtv-module-head Streamerzy
+						.xdtv-live-grid
+							each c in result.creators
+								+xdtvLiveCard(c)
+				if result.clips.length > 0
+					section.xdtv-search-block
+						h2.xdtv-module-head Klipy
+						.xdtv-clip-grid
+							each c in result.clips
+								+xdtvClipCard(c)
+				if result.items.length > 0
+					section.xdtv-search-block
+						h2.xdtv-module-head Materiały
+						.xdtv-wall
+							each item in result.items
+								+xdtvTile(item)
+				if result.items.length === 0 && result.creators.length === 0 && result.clips.length === 0
+					p.xdtv-empty Nic nie znaleziono dla „#{searchQuery}”. Spróbuj innego słowa.
+		include ../includes/xdtv-sidebar.pug

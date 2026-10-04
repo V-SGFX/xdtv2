@@ -9,7 +9,7 @@ html
 			.container
 				block content
 		include includes/footer.pug
-		//- XDTV: okienko „+ WRZUĆ” tam, gdzie nie ma formularza boardu
-		if !minimal && !board
+		//- XDTV: okienko „+ Wrzuć” wszędzie poza panelem moderatora
+		if !minimal && !modview
 			include includes/xdtv-upload.pug
 

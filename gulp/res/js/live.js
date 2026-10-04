@@ -1,4 +1,4 @@
-/* globals __ isRecent banmessage isGlobalRecent isThread post extraLocals isModView io setLocalStorage */
+/* globals __ isRecent banmessage isGlobalRecent isThread post extraLocals isModView io setLocalStorage jschanPath */
 let liveEnabled = localStorage.getItem('live') == 'true';
 let scrollEnabled = localStorage.getItem('scroll') == 'true';
 let socket;
@@ -196,7 +196,7 @@ window.addEventListener('settingsReady', function() { //after domcontentloaded
 		}, 50);
 	};
 
-	let jsonParts = window.location.pathname.replace(/\.html$/, '.json').split('/');
+	let jsonParts = jschanPath.replace(/\.html$/, '.json').split('/'); //XDTV: jschanPath
 	let jsonPath;
 	if (isModView) {
 		jsonParts.splice(2,1); //remove manage from json url
@@ -257,7 +257,7 @@ window.addEventListener('settingsReady', function() { //after domcontentloaded
 		if (supportsWebSockets) {
 			updateButton.style.display = 'none';
 			if (!room) {
-				const roomParts = window.location.pathname.replace(/\.html$/, '').split('/');
+				const roomParts = jschanPath.replace(/\.html$/, '').split('/'); //XDTV: jschanPath
 				room = `${roomParts[1]}-${roomParts[roomParts.length-1]}`;
 			}
 			socket = io({

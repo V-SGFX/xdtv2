@@ -1,34 +1,45 @@
-//- XDTV — nagłówek portalu + pasek kategorii.
-//- Aktywna pozycja: wallTab (strony ściany, live, klipy) albo board (strony boardów).
+//- XDTV — nagłówek portalu + pasek sekcji.
+//- Aktywna pozycja: wallTab (ściana, live, klipy, szukaj) albo board (kanał / post).
 - const xdtvTab = (typeof wallTab !== 'undefined' && wallTab) ? wallTab : null
 - const xdtvBoard = board ? board._id : null
 - const xdtvWallActive = ['najnowsze', 'popularne', 'dzis'].includes(xdtvTab)
-- const xdtvCats = [['smietnik', 'Śmietnik'], ['memy', 'Memy'], ['gify', 'GIF-y'], ['stream', 'Stream'], ['leaked', 'Leaked']]
-//- Na stronie boardu „Wrzuć” otwiera jego formularz jschan; gdzie indziej — okienko XDTV.
-- const xdtvUploadHref = (xdtvBoard && !modview) ? '#postform' : '#wrzuc'
+- const xdtvMain = [['memy', 'Memy'], ['gify', 'GIF-y'], ['screeny', 'Screeny']]
+- const xdtvSmall = [['smietnik', 'Śmietnik'], ['stream', 'Stream'], ['leaked', 'Leaked']]
+- const xdtvQuery = (typeof searchQuery !== 'undefined' && searchQuery) ? searchQuery : ''
 unless minimal
 	nav.navbar.xdtv-header
 		.xdtv-header-inner
-			a.xdtv-logo(href='/index.html' title='XDTV.FANS — strona główna')
+			a.xdtv-logo(href='/index.html' title='XDTV.FANS — ściana')
 				span.xdtv-logo-mark XDTV
 				span.xdtv-logo-rest .FANS
 			.xdtv-mainnav
 				a(href='/index.html' class=(xdtvWallActive ? 'xdtv-active' : '')) Ściana
-				a(href='/memy/index.html' class=(xdtvBoard === 'memy' ? 'xdtv-active' : '')) Memy
-				a(href='/gify/index.html' class=(xdtvBoard === 'gify' ? 'xdtv-active' : '')) GIF-y
+				each c in xdtvMain
+					a(href=`/${c[0]}/` class=(xdtvBoard === c[0] ? 'xdtv-active' : '')) #{c[1]}
 				a(href='/clips.html' class=(xdtvTab === 'clips' ? 'xdtv-active' : '')) Klipy
 				a.xdtv-nav-live(href='/live.html' class=(xdtvTab === 'live' ? 'xdtv-active' : ''))
 					span.xdtv-dot
 					| Live
 			.xdtv-header-actions
-				a.xdtv-btn.xdtv-upload-btn(href=xdtvUploadHref data-xdtv-upload=(xdtvUploadHref === '#wrzuc' ? '' : undefined) title='Wrzuć obrazek')
-					span.xdtv-upload-plus +
-					span.xdtv-upload-label Wrzuć
-				if !modview && board
-					a.xdtv-icon-link(href=`/${board._id}/manage/${managePage || 'index.html'}` title=__('Manage'))
+				form.xdtv-search(action='/szukaj.html' method='GET' role='search' class=(xdtvQuery ? 'xdtv-search-open' : ''))
+					label.xdtv-sr(for='xdtv-q') Szukaj
+					input#xdtv-q(type='search' name='q' placeholder='Szukaj…' value=xdtvQuery maxlength='60' autocomplete='off')
+					button.xdtv-icon-link.xdtv-search-btn(type='submit' title='Szukaj' aria-label='Szukaj')
+						svg(viewBox='0 0 24 24' width='18' height='18' aria-hidden='true')
+							path(fill='currentColor' d='M10 2a8 8 0 0 1 6.32 12.9l5.39 5.4-1.41 1.4-5.4-5.39A8 8 0 1 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z')
+				if modview
+					a.xdtv-btn.xdtv-upload-btn(href='#postform' title='Nowy wątek')
+						span.xdtv-upload-plus +
+						span.xdtv-upload-label Wrzuć
+				else
+					a.xdtv-btn.xdtv-upload-btn(href='#wrzuc' data-xdtv-upload title='Wrzuć obrazek')
+						span.xdtv-upload-plus +
+						span.xdtv-upload-label Wrzuć
+				if board
+					a.xdtv-icon-link(href=`/${board._id}/manage/${managePage || 'index.html'}` title='Panel moderatora' aria-label='Panel moderatora')
 						svg(viewBox='0 0 24 24' width='18' height='18' aria-hidden='true')
 							path(fill='currentColor' d='M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm0 2.2 6 2.25V11c0 3.9-2.5 7.6-6 8.8-3.5-1.2-6-4.9-6-8.8V6.45l6-2.25Z')
-				a.xdtv-icon-link(href='/account.html' title=__('Account'))
+				a.xdtv-icon-link(href='/account.html' title='Konto' aria-label='Konto')
 					svg(viewBox='0 0 24 24' width='18' height='18' aria-hidden='true')
 						path(fill='currentColor' d='M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0-8a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 10c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Zm-6 6v-1c0-1.3 2.6-3 6-3s6 1.7 6 3v1H6Z')
 				a.jsonly.xdtv-icon-link#settings(data-label=(__('Settings')) title=__('Settings'))
@@ -38,6 +49,5 @@ unless minimal
 			a(href='/popularne.html' class=(xdtvTab === 'popularne' ? 'xdtv-active' : '')) Popularne
 			a(href='/dzis.html' class=(xdtvTab === 'dzis' ? 'xdtv-active' : '')) Dziś
 			span.xdtv-subnav-sep
-			each c in xdtvCats
-				a(href=`/${c[0]}/index.html` class=(xdtvBoard === c[0] ? 'xdtv-active' : '')) #{c[1]}
-			a#overboardlink.xdtv-subnav-muted(href='/overboard.html' title=__('Overboard')) Wszystko
+			each c in xdtvSmall
+				a.xdtv-subnav-small(href=`/${c[0]}/` class=(xdtvBoard === c[0] ? 'xdtv-active' : '')) #{c[1]}

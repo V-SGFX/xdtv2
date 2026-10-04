@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* globals setDefaultLocalStorage settings */
 const isCatalog = /^\/(\w+\/(manage\/)?)?catalog.html/.test(window.location.pathname);
-const isThread = /\/\w+\/thread\/\d+.html/.test(window.location.pathname);
+//XDTV: post ma adres /kanal/post/123 — skrypty jschan dostają jego odpowiednik /kanal/thread/123.html
+const jschanPath = window.location.pathname.replace(/^\/(\w+)\/post\/(\d+)\/?$/, '/$1/thread/$2.html');
+const isThread = /\/\w+\/thread\/\d+.html/.test(jschanPath);
 const isModView = /\/\w+\/manage\/(thread\/)?(index|\d+).html/.test(window.location.pathname);
 const isManage = /\/(\w+\/manage|globalmanage)\/(recent|reports|bans|boards|(global)?logs|settings|banners|accounts|roles|news|filters|custompages|assets|staff).html/.test(window.location.pathname);
 const isGlobalRecent = window.location.pathname === '/globalmanage/recent.html';

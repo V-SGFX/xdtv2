@@ -1,11 +1,5 @@
-//- XDTV — wspólne elementy ściany: kafelek, reakcje, karty LIVE i klipów.
-
-//- Stałe trzymamy w mixinach: pug nie pozwala na kod na najwyższym poziomie
-//- pliku dołączanego do szablonu, który rozszerza layout.
-
-mixin xdtvThumbSrc(file)
-	- const base = (file.cdn && cdnUrl) ? `${cdnUrl}/${file.cdn}/` : '/file/'
-	| #{file.hasThumb ? `${base}thumb/${file.hash}${file.thumbextension}` : `${base}${file.filename}`}
+//- XDTV — wspólne elementy: kafelek, reakcje, karty LIVE i klipów.
+//- Dane i stałe z `xdtv` (lib/xdtv/view.js) w lokalnych zmiennych pug.
 
 mixin xdtvMedia(file, cls)
 	- const base = (file.cdn && cdnUrl) ? `${cdnUrl}/${file.cdn}/` : '/file/'
@@ -19,33 +13,33 @@ mixin xdtvMedia(file, cls)
 		else if isGif
 			span.xdtv-badge GIF
 
-//- Liczniki pod kafelkiem: dwie najczęstsze reakcje + komentarze. data-ref → odświeżane przez JS.
+//- Pod kafelkiem: dwie najczęstsze reakcje, komentarze, czas. data-ref → odświeżane przez JS.
 mixin xdtvTileMeta(item)
-	- const xdtvReactionEmoji = { smiech: '😂', ogien: '🔥', czaszka: '💀', klaun: '🤡', serce: '❤️' }
 	span.xdtv-tile-meta(data-ref=`${item.post.board}:${item.post.postId}`)
 		span.xdtv-tile-reacts
 			each r in item.reactions
-				span.xdtv-react-mini #{xdtvReactionEmoji[r[0]]} #{r[1]}
+				span.xdtv-react-mini #{xdtv.KINDS[r[0]]} #{r[1]}
 		span.xdtv-tile-comments 💬 #{item.replies}
-		span.xdtv-tile-board #{item.post.board}
+		span.xdtv-tile-ago(title=item.channel) #{item.ago}
 
 mixin xdtvTile(item, cls)
-	a.xdtv-tile(href=item.link class=cls style=`--r:${item.ratio.toFixed(3)}` title=(item.post.subject || item.post.nomarkup || '').substring(0, 120))
+	a.xdtv-tile(href=item.link class=cls style=`--r:${item.ratio.toFixed(3)}` title=(item.post.subject || item.post.nomarkup || item.channel).substring(0, 120))
 		+xdtvMedia(item.file, 'xdtv-tile-media')
 		+xdtvTileMeta(item)
 
-//- Pasek reakcji pod postem (widok wątku). Przyciski działają przez JS (xdtv.js).
+//- Pasek reakcji pod postem. Przyciski działają przez JS (xdtv.js).
 mixin xdtvReactBar(post)
-	- const xdtvReactionEmoji = { smiech: '😂', ogien: '🔥', czaszka: '💀', klaun: '🤡', serce: '❤️' }
-	- const counts = post.xdtvReactions || {}
+	- const counts = xdtv.reactionCounts(post)
 	.xdtv-reactbar(data-ref=`${post.board}:${post.postId}` data-board=post.board data-post=post.postId)
-		each emoji, kind in xdtvReactionEmoji
-			button.xdtv-react(type='button' data-kind=kind title='Reaguj')
+		each emoji, kind in xdtv.KINDS
+			button.xdtv-react(type='button' data-kind=kind title='Reaguj' aria-label=`Reakcja ${emoji}`)
 				span.xdtv-react-emoji #{emoji}
 				span.xdtv-react-count #{counts[kind] > 0 ? counts[kind] : ''}
 
+mixin xdtvPlatform(platform)
+	span.xdtv-platform(class=`xdtv-platform-${platform}`) #{({ twitch: 'Twitch', kick: 'Kick', youtube: 'YouTube' })[platform] || platform}
+
 mixin xdtvLiveCard(c, compact)
-	- const xdtvPlatformName = { twitch: 'Twitch', kick: 'Kick', youtube: 'YouTube' }
 	a.xdtv-live-card(href=c.platformUrl target='_blank' rel='noopener nofollow' class=(compact ? 'xdtv-live-compact' : ''))
 		span.xdtv-live-thumb
 			if c.thumbnailUrl
@@ -55,7 +49,7 @@ mixin xdtvLiveCard(c, compact)
 		span.xdtv-live-body
 			span.xdtv-live-name
 				| #{c.displayName}
-				span.xdtv-platform(class=`xdtv-platform-${c.platform}`) #{xdtvPlatformName[c.platform] || c.platform}
+				+xdtvPlatform(c.platform)
 			if c.currentTitle
 				span.xdtv-live-title #{c.currentTitle}
 			if c.category
@@ -64,7 +58,6 @@ mixin xdtvLiveCard(c, compact)
 				span.xdtv-btn.xdtv-btn-small Oglądaj
 
 mixin xdtvClipCard(c)
-	- const xdtvPlatformName = { twitch: 'Twitch', kick: 'Kick', youtube: 'YouTube' }
 	a.xdtv-clip-card(href=c.url target='_blank' rel='noopener nofollow')
 		span.xdtv-clip-thumb
 			if c.thumbnailUrl
@@ -76,6 +69,7 @@ mixin xdtvClipCard(c)
 			span.xdtv-clip-title #{c.title}
 			span.xdtv-clip-meta
 				| #{c.creatorName}
-				span.xdtv-platform(class=`xdtv-platform-${c.platform}`) #{xdtvPlatformName[c.platform] || c.platform}
+				+xdtvPlatform(c.platform)
 				if c.views
-					|  · #{c.views.toLocaleString('pl-PL')} wyśw.
+					| #{' · '}#{c.views.toLocaleString('pl-PL')} wyśw.
+			span.xdtv-clip-cta ▶ Obejrzyj

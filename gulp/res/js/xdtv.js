@@ -88,7 +88,7 @@
 	});
 
 	// ── Reakcje ───────────────────────────────────────────────────
-	let KINDS = { smiech: '😂', ogien: '🔥', czaszka: '💀', klaun: '🤡', serce: '❤️' };
+	let KINDS = { serce: '♡', smiech: '😂', czaszka: '💀' };
 
 	const renderTileMeta = (el, data) => {
 		const reacts = el.querySelector('.xdtv-tile-reacts');
@@ -120,8 +120,8 @@
 		});
 	};
 
-	const refreshReactions = async () => {
-		const els = [...document.querySelectorAll('[data-ref]')];
+	const refreshReactions = async (scope = document) => {
+		const els = [...scope.querySelectorAll('[data-ref]')];
 		if (els.length === 0) {
 			return;
 		}
@@ -180,6 +180,9 @@
 			delete bar.dataset.busy;
 		}
 	});
+
+	// dla doładowanych porcji ściany (xdtv-wall.js)
+	window.xdtvRefreshReactions = refreshReactions;
 
 	window.addEventListener('DOMContentLoaded', () => {
 		refreshReactions();

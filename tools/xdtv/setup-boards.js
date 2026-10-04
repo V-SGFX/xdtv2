@@ -11,6 +11,7 @@ const BOARDS = [
 	['smietnik', 'Śmietnik', 'Wszystko, co wygrzebał internet.'],
 	['memy', 'Memy', 'Memy, śmieszne obrazki, screeny.'],
 	['gify', 'GIF-y', 'GIF-y i krótkie wideo.'],
+	['screeny', 'Screeny', 'Screeny: rozmowy, gry, internetowe kurioza.'],
 	['stream', 'Stream', "Streamerzy, klipy, akcje z live'ów."],
 	['leaked', 'Leaked', 'Przecieki ze sceny i gier. Zakaz danych osobowych, doxxingu i intymnych zdjęć.'],
 ];

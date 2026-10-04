@@ -1,0 +1,9 @@
+include ../mixins/xdtv.pug
+//- XDTV — fragment: kolejna porcja kafelków ściany (+ znacznik następnej porcji).
+each item in items
+	+xdtvTile(item)
+if next
+	.xdtv-more(data-xdtv-more=nextUrl)
+		span.xdtv-more-spinner Ładuję kolejne…
+else if items.length === 0
+	.xdtv-wall-end To wszystko. Wrzuć coś nowego.

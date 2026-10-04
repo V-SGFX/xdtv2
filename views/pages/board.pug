@@ -5,42 +5,77 @@ include ../mixins/managenav.pug
 include ../mixins/boardheader.pug
 include ../mixins/announcements.pug
 
+include ../mixins/xdtv.pug
+
 block head
-	title /#{board._id}/ - #{board.settings.name} - #{__n('Page %s', page)}
+	if modview
+		title /#{board._id}/ - #{board.settings.name} - #{__n('Page %s', page)}
+	else
+		//- XDTV: kanał zamiast boardu
+		- const channel = xdtv.channelName(board._id)
+		title #{channel}#{page > 1 ? ` — strona ${page}` : ''} — #{meta.siteName}
+		meta(name='description' content=board.settings.description || `${channel} na XDTV.FANS`)
+		if meta.url
+			link(rel='canonical' href=`${meta.url}/${board._id}/${page > 1 ? page + '.html' : ''}`)
+			meta(property='og:title' content=`${channel} — ${meta.siteName}`)
 
 block content
-	+boardheader(modview ? __('Mod Index') : null)
-	br
-	include ../includes/postform.pug
-	br
-	+announcements()
-	include ../includes/stickynav.pug
 	if modview
-		+managenav('index')
-	else
-		.pages
-			include ../includes/boardpages.pug
-			+boardnav(null, false, false)
-	form(action=`/forms/board/${board._id}/${modview ? 'mod' : ''}actions` method='POST' enctype='application/x-www-form-urlencoded')
-		if modview
-			input(type='hidden' name='_csrf' value=csrf)
-		hr(size=1)
-		if threads.length === 0
-			p #{__('No posts.')}
-			hr(size=1)
-		for thread in threads
-			.thread
-				+post(thread, true)
-				for post in thread.replies
-					+post(post, true)
-			hr(size=1)
+		+boardheader(modview ? __('Mod Index') : null)
+		br
+		include ../includes/postform.pug
+		br
+		+announcements()
+		include ../includes/stickynav.pug
 		if modview
 			+managenav('index')
 		else
 			.pages
 				include ../includes/boardpages.pug
 				+boardnav(null, false, false)
-		if modview
-			include ../includes/actionfooter_manage.pug
-		else
-			include ../includes/actionfooter.pug
+		form(action=`/forms/board/${board._id}/${modview ? 'mod' : ''}actions` method='POST' enctype='application/x-www-form-urlencoded')
+			if modview
+				input(type='hidden' name='_csrf' value=csrf)
+			hr(size=1)
+			if threads.length === 0
+				p #{__('No posts.')}
+				hr(size=1)
+			for thread in threads
+				.thread
+					+post(thread, true)
+					for post in thread.replies
+						+post(post, true)
+				hr(size=1)
+			if modview
+				+managenav('index')
+			else
+				.pages
+					include ../includes/boardpages.pug
+					+boardnav(null, false, false)
+			if modview
+				include ../includes/actionfooter_manage.pug
+			else
+				include ../includes/actionfooter.pug
+	else
+		//- XDTV: kanał = ściana obrazków (dalsze porcje: xdtv-wall.js ← /xdtv/sciana.html)
+		//- Strona 1: porcja po dacie (xdtvWall z buildBoard); dalsze strony jschan — awaryjnie
+		- const items = xdtvWall ? xdtvWall.items : xdtv.toItems(threads)
+		- const cursor = xdtvWall ? xdtvWall.next : (threads.length ? new Date(threads[threads.length - 1].date).getTime() : null)
+		.xdtv-page
+			.xdtv-main
+				.xdtv-section-head
+					h1.xdtv-section-title #{xdtv.channelName(board._id)}
+					if board.settings.description
+						span.xdtv-section-note #{board.settings.description}
+				if items.length > 0
+					.xdtv-wall
+						each item in items
+							+xdtvTile(item)
+					if cursor
+						.xdtv-more(data-xdtv-more=`/xdtv/sciana.html?kanal=${board._id}&przed=${cursor}`)
+							span.xdtv-more-spinner Ładuję kolejne…
+				else
+					.xdtv-empty
+						p Pusto w tym kanale. Bądź pierwszy.
+						a.xdtv-btn(href='#wrzuc' data-xdtv-upload) + Wrzuć
+			include ../includes/xdtv-sidebar.pug

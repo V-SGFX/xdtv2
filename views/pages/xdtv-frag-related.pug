@@ -1,0 +1,27 @@
+include ../mixins/xdtv.pug
+//- XDTV — fragment: nawigacja do sąsiednich materiałów i „więcej z kanału”.
+nav.xdtv-prevnext(aria-label='Sąsiednie materiały')
+	if rel.newer
+		a.xdtv-prevnext-link.xdtv-prev(href=rel.newer.link rel='prev' data-xdtv-key='ArrowLeft')
+			+xdtvMedia(rel.newer.file, 'xdtv-prevnext-thumb')
+			span.xdtv-prevnext-text
+				span.xdtv-prevnext-dir ← Nowszy
+				span.xdtv-prevnext-title #{(rel.newer.post.subject || rel.newer.post.nomarkup || rel.channel).substring(0, 60)}
+	else
+		span.xdtv-prevnext-link.xdtv-prevnext-none ← To najnowszy
+	if rel.older
+		a.xdtv-prevnext-link.xdtv-next(href=rel.older.link rel='next' data-xdtv-key='ArrowRight')
+			span.xdtv-prevnext-text
+				span.xdtv-prevnext-dir Starszy →
+				span.xdtv-prevnext-title #{(rel.older.post.subject || rel.older.post.nomarkup || rel.channel).substring(0, 60)}
+			+xdtvMedia(rel.older.file, 'xdtv-prevnext-thumb')
+	else
+		span.xdtv-prevnext-link.xdtv-prevnext-none To najstarszy →
+if rel.more.length > 0
+	section.xdtv-related
+		.xdtv-section-head
+			h2.xdtv-section-title Więcej z kanału #{rel.channel}
+			a.xdtv-section-note(href=`/${board}/`) cały kanał →
+		.xdtv-wall
+			each item in rel.more
+				+xdtvTile(item)

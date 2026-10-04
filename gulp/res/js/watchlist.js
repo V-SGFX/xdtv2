@@ -1,4 +1,4 @@
-/* globals Dragable threadwatcher watchedthread Minimisable setLocalStorage */
+/* globals Dragable threadwatcher watchedthread Minimisable setLocalStorage jschanPath */
 class ThreadWatcher {
 	init() {
 		//dont bother loading if no footer, must be minimal view
@@ -9,7 +9,7 @@ class ThreadWatcher {
 
 		//read the watchlist map and minimised state from localstorage
 		this.watchListMap = new Map(JSON.parse(localStorage.getItem('watchlist')));
-		this.threadMatch = window.location.pathname.match(/^\/(\w+)(?:\/manage)?\/thread\/(\d+)\.html$/);
+		this.threadMatch = jschanPath.match(/^\/(\w+)(?:\/manage)?\/thread\/(\d+)\.html$/); //XDTV: jschanPath
 
 		//call the updatehandler when storage changes in another context
 		window.addEventListener('storage', e => this.storageEventHandler(e));

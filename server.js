@@ -81,6 +81,7 @@ const config = require(__dirname+'/lib/misc/config.js')
 		app.locals.archiveLinksURL = archiveLinksURL;
 		app.locals.reverseImageLinksURL = reverseImageLinksURL;
 		app.locals.cdnUrl = require(__dirname+'/lib/file/r2.js').publicUrl; //XDTV
+		app.locals.xdtv = require(__dirname+'/lib/xdtv/view.js'); //XDTV: pomocniki widoku
 		app.locals.enableWebring = enableWebring;
 		app.locals.enableWeb3 = enableWeb3;
 		app.locals.commit = commit;

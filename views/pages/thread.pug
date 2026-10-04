@@ -8,83 +8,93 @@ include ../mixins/announcements.pug
 
 block head
 	- const subjectString = thread.subject || (thread.nomarkup ? `${thread.nomarkup.substring(0, globalLimits.fieldLength.subject)}${thread.nomarkup.length > globalLimits.fieldLength.subject ? '...' : ''}` : thread.postId);
-	title /#{board._id}/ - #{subjectString}
-	if !modview
-		meta(property='og:title', content=thread.subject)
-		meta(property='og:description', content=thread.nomarkup)
-		if thread.files.length > 0
-			if thread.spoiler || thread.files[0].spoiler
-				meta(property='og:image', content='/file/spoiler.png')
-			else
-				- const file = thread.files[0];
-				- const maintype = file.mimetype.split('/')[0];
-				case maintype
-					when 'image'
-					when 'video'
-					when 'audio'
-						meta(property=`og:${maintype}`, content=`${(file.cdn && cdnUrl) ? `${cdnUrl}/${file.cdn}/` : '/file/'}${file.filename}`)
-						- break
-					default
-						- break
+	if modview
+		title /#{board._id}/ - #{subjectString}
+	else
+		//- XDTV: post jako materiał — tytuł, opis, canonical /kanal/post/id, obraz OG
+		- const channel = xdtv.channelName(board._id)
+		- const postTitle = thread.subject || (thread.nomarkup ? thread.nomarkup.substring(0, 70) : `${channel} #${thread.postId}`)
+		- const postUrl = `${meta.url || ''}/${board._id}/post/${thread.postId}`
+		title #{postTitle} — #{channel} — #{meta.siteName}
+		meta(name='description' content=(thread.nomarkup ? thread.nomarkup.substring(0, 160) : `${channel} na ${meta.siteName}: obrazek, komentarze i reakcje.`))
+		link(rel='canonical' href=postUrl)
+		meta(property='og:url' content=postUrl)
+		meta(property='og:title' content=postTitle)
+		meta(property='og:description' content=(thread.nomarkup ? thread.nomarkup.substring(0, 200) : channel))
+		- const ogFile = xdtv.previewFile(thread)
+		if ogFile
+			- const ogBase = (ogFile.cdn && cdnUrl) ? `${cdnUrl}/${ogFile.cdn}/` : `${meta.url || ''}/file/`
+			- const ogIsImage = ogFile.mimetype.startsWith('image/') && ogFile.mimetype !== 'image/gif'
+			meta(property='og:image' content=(ogIsImage ? `${ogBase}${ogFile.filename}` : `${ogBase}thumb/${ogFile.hash}${ogFile.thumbextension}`))
+			meta(name='twitter:card' content='summary_large_image')
 
 block content
-	//- XDTV: powrót na ścianę
-	a.xdtv-back(href='/index.html') ← Wróć do ściany
-	+boardheader(modview ? __('Mod View') : null)
-	br
-	if thread.replyposts >= board.settings.replyLimit && !thread.cyclic && !modview
-		p.title.text-center #{__('⊖ Thread has reached reply limit.')}
-	else
-		include ../includes/postform.pug
-		br
-	+announcements()
-	include ../includes/stickynav.pug
-	if modview
-		+managenav(null, true)
-	else
-		.pages
-			+boardnav(null, true, true)
+	- const replyLimited = thread.replyposts >= board.settings.replyLimit && !thread.cyclic
 	- const uids = board.settings.ids ? new Set() : void 0;
-	form(action=`/forms/board/${board._id}/${modview ? 'mod' : ''}actions` method='POST' enctype='application/x-www-form-urlencoded')
-		if modview
-			input(type='hidden' name='_csrf' value=csrf)
-		hr(size=1)
-		.thread(class=(modview ? '' : 'xdtv-thread-public'))
-			- uids && thread.userId && uids.add(thread.userId)
-			+post(thread)
-			//- XDTV: reakcje pod postem i nagłówek komentarzy
-			+xdtvReactBar(thread)
-			.xdtv-comments-head Komentarze
-				span.xdtv-comments-count #{thread.replyposts}
-			for post in thread.replies
-				- uids && post.userId && uids.add(post.userId)
-				+post(post)
-		if thread.replyposts >= board.settings.replyLimit && !thread.cyclic && !modview
+	if modview
+		//- Panel moderatora: widok jschan bez zmian
+		+boardheader(__('Mod View'))
+		br
+		if replyLimited
 			p.title.text-center #{__('⊖ Thread has reached reply limit.')}
 		else
-			a.bottom-reply.no-decoration.post-button(href='#postform') [#{__('New Reply')}]
-		hr(size=1)
-		.wrapbar
-			if modview
+			include ../includes/postform.pug
+			br
+		+announcements()
+		include ../includes/stickynav.pug
+		+managenav(null, true)
+		form(action=`/forms/board/${board._id}/modactions` method='POST' enctype='application/x-www-form-urlencoded')
+			input(type='hidden' name='_csrf' value=csrf)
+			hr(size=1)
+			.thread
+				- uids && thread.userId && uids.add(thread.userId)
+				+post(thread)
+				for post in thread.replies
+					- uids && post.userId && uids.add(post.userId)
+					+post(post)
+			if !replyLimited
+				a.bottom-reply.no-decoration.post-button(href='#postform') [#{__('New Reply')}]
+			hr(size=1)
+			.wrapbar
 				+managenav(null, true)
-			else
-				.pages
-					+boardnav(null, true, true)
-			#threadstats 
-				span #{__n('%s replies', thread.replyposts)}
-				|  |  
-				span #{__n('%s files', thread.replyfiles + thread.files.length)}
-				if board.settings.ids
-					|  |   
-					span #{__n('%s UIDs', uids.size)}
-		.jsonly#livetext
-			.dot#livecolor
-			|  #{__('Connecting...')} 
-			input.postform-style.ml-5.di#updatepostsbutton(type='button' value=__('Update'))
-		if modview
+				#threadstats
+					span #{__n('%s replies', thread.replyposts)}
+					| #{' | '}
+					span #{__n('%s files', thread.replyfiles + thread.files.length)}
+			.jsonly#livetext
+				.dot#livecolor
+				| #{' '}#{__('Connecting...')}#{' '}
+				input.postform-style.ml-5.di#updatepostsbutton(type='button' value=__('Update'))
 			include ../includes/actionfooter_manage.pug
-		else
-			include ../includes/actionfooter.pug
-	//- XDTV: composer komentarzy — poza formularzem akcji (zagnieżdżone formularze i forms.js)
-	if !modview && !(thread.replyposts >= board.settings.replyLimit && !thread.cyclic)
-		include ../includes/xdtv-composer.pug
+	else
+		//- XDTV: POST — materiał, reakcje, komentarze, composer, related
+		- const channel = xdtv.channelName(board._id)
+		.xdtv-page.xdtv-post-page
+			.xdtv-main
+				a.xdtv-back(href=`/${board._id}/`) ← #{channel}
+				//- Formularz jschan zostaje (ukryty): korzystają z niego skrypty cytowania i captchy
+				if !replyLimited
+					include ../includes/postform.pug
+				form(action=`/forms/board/${board._id}/actions` method='POST' enctype='application/x-www-form-urlencoded')
+					.thread.xdtv-thread-public
+						- uids && thread.userId && uids.add(thread.userId)
+						+post(thread)
+						+xdtvReactBar(thread)
+						.xdtv-comments-head
+							| Komentarze
+							span.xdtv-comments-count #{thread.replyposts}
+						for post in thread.replies
+							- uids && post.userId && uids.add(post.userId)
+							+post(post)
+					.jsonly#livetext
+						.dot#livecolor
+						| #{' '}#{__('Connecting...')}#{' '}
+						input.postform-style.ml-5.di#updatepostsbutton(type='button' value=__('Update'))
+					include ../includes/actionfooter.pug
+				//- Composer — poza formularzem akcji (zagnieżdżone formularze i forms.js)
+				if replyLimited
+					p.xdtv-empty Komentarze zamknięte — osiągnięto limit.
+				else
+					include ../includes/xdtv-composer.pug
+				.xdtv-related-lazy(data-xdtv-fragment=`/xdtv/related.html?kanal=${board._id}&post=${thread.postId}`)
+			include ../includes/xdtv-sidebar.pug

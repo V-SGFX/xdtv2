@@ -1,20 +1,22 @@
 extends ../layout.pug
 include ../mixins/xdtv.pug
 
-//- XDTV — ściana obrazków: Najnowsze (index), Popularne, Dziś. Dane: lib/xdtv/home.js
+//- XDTV — ściana: Najnowsze (index), Popularne, Dziś. Dane: lib/xdtv/home.js
+//- Kolejne porcje (Najnowsze) doładowuje xdtv-wall.js z /xdtv/sciana.html.
 
 block head
-	- const pageTitle = wallTab === 'najnowsze' ? `${meta.siteName} — co dziś wygrzebał internet` : `${wallTitle} — ${meta.siteName}`
+	- const pageTitle = wallTab === 'najnowsze' ? `${meta.siteName} — ściana internetowych śmieci` : `${wallTitle} — ${meta.siteName}`
 	- const pagePath = wallTab === 'najnowsze' ? '/' : `/${wallTab}.html`
 	title #{pageTitle}
-	meta(name='description' content='Ściana memów, obrazków i GIF-ów. Wrzucasz bez konta. Do tego LIVE i klipy streamerów.')
+	meta(name='description' content='Ściana memów, obrazków, GIF-ów i screenów. Wrzucasz bez konta. Do tego LIVE i klipy streamerów.')
 	meta(property='og:title' content=pageTitle)
-	meta(property='og:description' content='Memy, obrazki, GIF-y, LIVE i klipy streamerów.')
+	meta(property='og:description' content='Memy, obrazki, GIF-y, screeny, LIVE i klipy streamerów.')
 	if meta.url
 		link(rel='canonical' href=`${meta.url}${pagePath}`)
 		meta(property='og:url' content=`${meta.url}${pagePath}`)
 	if wallItems && wallItems[0]
-		meta(property='og:image' content=`${(wallItems[0].file.cdn && cdnUrl) ? `${cdnUrl}/${wallItems[0].file.cdn}/` : (meta.url || '') + '/file/'}${wallItems[0].file.hasThumb ? 'thumb/' + wallItems[0].file.hash + wallItems[0].file.thumbextension : wallItems[0].file.filename}`)
+		- const f = wallItems[0].file
+		meta(property='og:image' content=`${(f.cdn && cdnUrl) ? `${cdnUrl}/${f.cdn}/` : (meta.url || '') + '/file/'}${f.hasThumb ? 'thumb/' + f.hash + f.thumbextension : f.filename}`)
 
 block content
 	.xdtv-page
@@ -33,31 +35,15 @@ block content
 						when 'dzis'
 							| co się dzieje od wczoraj
 						default
-							| świeże wrzuty ze wszystkich kategorii
+							| świeże wrzuty ze wszystkich kanałów
 
 			if wallItems && wallItems.length > 0
 				.xdtv-wall
-					each item, i in wallItems
+					each item in wallItems
 						+xdtvTile(item)
-						//- Na telefonie paski LIVE i KLIPY wchodzą między obrazki (panel boczny jest ukryty)
-						if i === 11 && liveStrip && liveStrip.length > 0
-							section.xdtv-strip.xdtv-only-narrow
-								h2.xdtv-module-head
-									a(href='/live.html')
-										span.xdtv-dot
-										| Live teraz
-								.xdtv-strip-scroll
-									each c in liveStrip
-										+xdtvLiveCard(c, true)
-						if i === 23 && clipStrip && clipStrip.length > 0
-							section.xdtv-strip.xdtv-only-narrow
-								h2.xdtv-module-head
-									a(href='/clips.html') Klipy
-								.xdtv-strip-scroll
-									each c in clipStrip
-										+xdtvClipCard(c)
-				.xdtv-more
-					a.xdtv-btn.xdtv-btn-ghost(href='/catalog.html') Starsze w katalogu →
+				if wallNext
+					.xdtv-more(data-xdtv-more=`/xdtv/sciana.html?przed=${wallNext}`)
+						span.xdtv-more-spinner Ładuję kolejne…
 			else
 				.xdtv-empty
 					p Pusto. Bądź pierwszy.
